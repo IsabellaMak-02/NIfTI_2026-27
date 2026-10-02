@@ -1,8 +1,8 @@
-# Verified Baseline: Ported Code Only
+# The refactored code
 
 This folder contains the ported code from baseline_code.py. No extensions, no feedback control, no SO(3) dynamics. Everything is copied verbatim from the dissertation and verified to match the original.
 
-## What's Included
+## Glossary
 
 **Physics:**
 - `physics/field.py` — Elliptic-integral field calculations (numba-compiled)
@@ -41,7 +41,7 @@ This folder contains the ported code from baseline_code.py. No extensions, no fe
 **Reference:**
 - `baseline_code.py` — Original code (read-only)
 
-## What's Not Here
+## What I have removed from this handiver (found on other branches)
 
 - `control/` — Feedback controllers
 - `geometry/quaternion.py` — SO(3) utilities
@@ -63,30 +63,6 @@ Menu options:
 4. Simulate pod movement (open-loop)
 5. Compare controlled vs ideal field
 6. Quit
-
-## Verify It Works
-
-```bash
-python notebooks/nblib/parity_check.py
-```
-
-Runs field kernels and open-loop dynamics against `baseline_code.py` on thousands of test points. All results must match to machine precision.
-
-## Next Steps
-
-**To extend control**: Read the dissertation and start fresh. The closed-loop code in the main submission isn't confident in its recalibration logic.
-
-**To modify physics**: Change the geometry in `data/Presets/`, then re-run the parity check. The field kernels are well-tested.
-
-**To add a new simulation mode**: Build on `simulation/dynamics.py::run_dynamics()`. See `simulation/sensor_check.py` for an example.
-
-## Limitations
-
-- Attitude is Euler angles only (no SO(3))
-- No feedback control
-- Single-point dipole at COM (multi-dipole available in the main package but not here)
-
-## File Structure
 
 ```
 reduced/
