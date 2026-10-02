@@ -1,16 +1,16 @@
 # Verified Baseline: Ported Code Only
 
-This folder contains **only the code ported 1-to-1 from baseline_code.py**. No extensions, no feedback control, no SO(3) attitude dynamics. Everything here is copied verbatim from Lewis's dissertation and proven to match the original via parity check.
+This folder contains the ported code from baseline_code.py. No extensions, no feedback control, no SO(3) dynamics. Everything is copied verbatim from the dissertation and verified to match the original.
 
 ## What's Included
 
-**Physics kernels (verified identical to baseline):**
-- `physics/field.py` — Elliptic-integral field calculations (@njit compiled, from Bella Mak's code)
+**Physics:**
+- `physics/field.py` — Elliptic-integral field calculations (numba-compiled)
 - `physics/field_query.py` — Field evaluation at points
 - `physics/ideal_field.py` — Analytic ideal fields for comparison
-- `physics/dipole.py` — Dipole moment (inlined from baseline)
+- `physics/dipole.py` — Dipole moment
 
-**Geometry and data:**
+**Geometry:**
 - `geometry/transforms.py` — Rotation matrices (Euler angles)
 - `geometry/collection.py` — Magnet assembly and inertia
 - `geometry/shapes.py` — Magnet classes
@@ -23,69 +23,68 @@ This folder contains **only the code ported 1-to-1 from baseline_code.py**. No e
 - `data_io/results.py` — Save current assignments
 
 **Simulation:**
-- `simulation/dynamics.py` — Rigid-body ODE (Euler angles, open-loop)
-- `simulation/potential.py` — Potential energy grids (static, controlled, ideal)
+- `simulation/dynamics.py` — Rigid-body ODE (open-loop)
+- `simulation/potential.py` — Potential energy grids
 - `simulation/sensor_check.py` — Validation against sensor data
 
 **Plotting:**
-- `plotting/geometry_plots.py` — 3D track and pod visualization
+- `plotting/geometry_plots.py` — 3D track and pod
 - `plotting/heatmaps.py` — Potential energy heatmaps
-- `plotting/trajectory.py` — Trajectory visualization
+- `plotting/trajectory.py` — Trajectory plots
 
-**Control and UI:**
+**UI and config:**
 - `track/control.py` — Current assignment formula
-- `main.py` — Menu interface (options 1–5 only, no closed-loop)
+- `main.py` — Menu interface (options 1-5, open-loop only)
 - `naming.py` — Run labeling
 - `config.py` — Constants and paths
 
 **Reference:**
-- `baseline_code.py` — The original 1,861-line monolith (read-only)
+- `baseline_code.py` — Original code (read-only)
 
-## What's NOT Included
+## What's Not Here
 
-- `control/` — All feedback controllers (new, not ported)
-- `geometry/quaternion.py` — SO(3) utilities (new)
-- `simulation/calibration.py` — Levitation self-calibration (new, uncertain logic)
-- `simulation/closed_loop*.py` — Closed-loop simulation (new, experimental)
-- `tests/` — Test suite (new)
-- `notebooks/` — Jupyter notebooks (new)
+- `control/` — Feedback controllers
+- `geometry/quaternion.py` — SO(3) utilities
+- `simulation/calibration.py` — Self-calibration
+- `simulation/closed_loop*.py` — Closed-loop simulation
+- `tests/` — Test suite
+- `notebooks/` — Jupyter notebooks
 
-## Menu Options (Ported)
+## Usage
 
-```python
+```bash
 python main.py
 ```
 
-1. **Plot Track and Pod in 3D** — Geometry visualization
-2. **Check simulation against sensor data** — Validation
-3. **Plot potential energy** — Static, controlled, or ideal field
-4. **Simulate pod movement (open-loop)** — Run dynamics on a precomputed grid
-5. **Compare controlled vs ideal field** — Check against theory
-6. **Quit**
+Menu options:
+1. Plot Track and Pod in 3D
+2. Check simulation against sensor data
+3. Plot potential energy
+4. Simulate pod movement (open-loop)
+5. Compare controlled vs ideal field
+6. Quit
 
-## Parity Check
-
-Verify that this code matches the original:
+## Verify It Works
 
 ```bash
 python notebooks/nblib/parity_check.py
 ```
 
-This runs field kernels and open-loop dynamics head-to-head with `baseline_code.py` on thousands of test points. All outputs must be identical to machine precision.
+Runs field kernels and open-loop dynamics against `baseline_code.py` on thousands of test points. All results must match to machine precision.
 
-## For Students
+## Next Steps
 
-This is the clean baseline. Everything here is from the dissertation and has been proven correct. If you want to:
+**To extend control**: Read the dissertation and start fresh. The closed-loop code in the main submission isn't confident in its recalibration logic.
 
-- **Extend the control system**: Read the dissertation, start fresh. Don't inherit the closed-loop experiment in the main submission—it's not confident in its recalibration logic.
-- **Modify the physics**: The field kernels are from Bella Mak's elliptic-integral code and are well-tested. Change the geometry (presets in `data/Presets/`), then re-run the parity check.
-- **Add a new simulation mode**: Build it on top of `simulation/dynamics.py::run_dynamics()`, which handles the ODE integration. See `simulation/sensor_check.py` for an example.
+**To modify physics**: Change the geometry in `data/Presets/`, then re-run the parity check. The field kernels are well-tested.
 
-## Known Limitations
+**To add a new simulation mode**: Build on `simulation/dynamics.py::run_dynamics()`. See `simulation/sensor_check.py` for an example.
 
-- **Attitude only in Euler angles**: SO(3) is not here; the baseline used Euler angles and only validates static attitude.
-- **No feedback control**: The baseline had no controllers; to add any, build from scratch.
-- **Dipole model**: Single-point dipole at the COM. The full package's multi-dipole model (not here) is more accurate but slower.
+## Limitations
+
+- Attitude is Euler angles only (no SO(3))
+- No feedback control
+- Single-point dipole at COM (multi-dipole available in the main package but not here)
 
 ## File Structure
 
@@ -124,6 +123,3 @@ reduced/
 └── README.md                    (this file)
 ```
 
----
-
-**Contact the main package maintainers** if you find a discrepancy between this code and `baseline_code.py`. The parity check is the source of truth.

@@ -1,75 +1,62 @@
-# Manifest: Files Ported 1-to-1 from baseline_code.py
+# Manifest: File Sources
 
-This file lists the correspondence between `reduced/` files and the original `baseline_code.py` (1,861 lines).
+Maps each file back to the original `baseline_code.py` (1,861 lines).
 
-## Physics Kernels (Verified by Parity Check)
+## Physics
 
-| File | From baseline_code.py | Notes |
-|------|---|---|
-| `physics/field.py` | L746–892 (`B_calc`, `elliptic`, `B_rho`, `B_z`, `constants`, `closed_cyl`) | Unchanged, originally from Bella Mak |
-| `physics/field_query.py` | L701–724 (`Full_Field_At_Point`, `Field_On_Pod_Point`, `rotate_point_into_pod_frame`) + Magnet methods | Renamed and refactored |
-| `physics/ideal_field.py` | L725–745 (`B_field_Valley`, `B_field_Gravity`) | Unchanged |
-| `physics/dipole.py` | L1132–1135, L1214, L1304, L1602 (inline dipole calculation) | Extracted to function |
+| File | Source | Notes |
+|------|--------|-------|
+| `physics/field.py` | L746–892 | Elliptic-integral calculations, unchanged |
+| `physics/field_query.py` | L701–724 | Renamed and refactored |
+| `physics/ideal_field.py` | L725–745 | Unchanged |
+| `physics/dipole.py` | L1132–1135, L1214, L1304, L1602 | Extracted to function |
 
-## Geometry & Collections
+## Geometry
 
-| File | From baseline_code.py | Notes |
-|------|---|---|
-| `geometry/transforms.py` | L62 (`rotation_matrix_from_euler`) | Unchanged; `euler_from_matrix` added for display |
-| `geometry/collection.py` | L101–176 (`class Collection`, `ChangeAngle`, `compute_inertia_tensor`) | `_build_body_inertia_tensor` added for SO(3) |
-| `geometry/shapes.py` | L177–285 (`Magnet`, `PermMagnet`, `ElectroMagnet`) | Geometry/material only, `field_at()` removed |
-| `geometry/sampling.py` | L1037–1108 (`generate_pod_base_points`) | Unchanged |
+| File | Source | Notes |
+|------|--------|-------|
+| `geometry/transforms.py` | L62 | Added `euler_from_matrix` for display |
+| `geometry/collection.py` | L101–176 | Added `_build_body_inertia_tensor` |
+| `geometry/shapes.py` | L177–285 | Geometry/material only |
+| `geometry/sampling.py` | L1037–1108 | Unchanged |
 
-## I/O & Data
+## I/O
 
-| File | From baseline_code.py | Notes |
-|------|---|---|
-| `data_io/presets.py` | L286–371 (`load_track_preset`, `load_pod_preset`) | `input()` prompting stripped out |
-| `data_io/sensor_data.py` | L372–383 (`load_sensor_data`) | Unchanged |
-| `data_io/field_data.py` | L384–669 (`load/save_potential_energy`, `load/save_magnetic_field`) | Unchanged |
-| `data_io/results.py` | L670–700 (`savecurrents` → `save_currents`) | Renamed |
+| File | Source | Notes |
+|------|--------|-------|
+| `data_io/presets.py` | L286–371 | Removed `input()` prompting |
+| `data_io/sensor_data.py` | L372–383 | Unchanged |
+| `data_io/field_data.py` | L384–669 | Unchanged |
+| `data_io/results.py` | L670–700 | Renamed `savecurrents` to `save_currents` |
 
-## Simulation & Analysis
+## Simulation
 
-| File | From baseline_code.py | Notes |
-|------|---|---|
-| `simulation/dynamics.py` | L1586–1751 (`plot_movement`) + L162–184 (Euler angle ODE) | ODE split from plotting; SO(3) path removed |
-| `simulation/potential.py` | L1109–1370 (`energy_potential_ideal/_controlled/_static`) | Shared loop extracted into `_compute_grid()` |
-| `simulation/sensor_check.py` | L893–1036 (`Sensor_Check`, `Ideal_Check`) | Unchanged |
+| File | Source | Notes |
+|------|--------|-------|
+| `simulation/dynamics.py` | L162–184, L1586–1751 | ODE split from plotting |
+| `simulation/potential.py` | L1109–1370 | Extracted shared `_compute_grid()` |
+| `simulation/sensor_check.py` | L893–1036 | Unchanged |
 
-## Visualization
+## Plotting
 
-| File | From baseline_code.py | Notes |
-|------|---|---|
-| `plotting/geometry_plots.py` | L1371–1585 (`plot_track_and_pod_3D`) | Subset only |
-| `plotting/heatmaps.py` | L1371–1585 (`plot_heatmap_with_gradient`) | Subset only |
-| `plotting/trajectory.py` | L1586–1751 (trajectory plotting from `plot_movement`) | Extracted for reuse |
+| File | Source | Notes |
+|------|--------|-------|
+| `plotting/geometry_plots.py` | L1371–1585 | Subset |
+| `plotting/heatmaps.py` | L1371–1585 | Subset |
+| `plotting/trajectory.py` | L1586–1751 | Extracted for reuse |
 
-## Control & UI
+## UI
 
-| File | From baseline_code.py | Notes |
-|------|---|---|
-| `track/control.py` | L25 (current assignment formula inlined) | Extracted to `assign_currents_for_pod()` |
-| `main.py` | L1752–1863 (menu logic) + options 1–5 | Options 6–7 (closed-loop) removed; calls delegated |
-| `config.py` | Constants scattered throughout, path setup | Collected for centralization |
+| File | Source | Notes |
+|------|--------|-------|
+| `track/control.py` | L25 | Extracted formula |
+| `main.py` | L1752–1863 | Menu logic, options 1–5 |
+| `config.py` | Scattered | Collected constants |
 
-## NOT Ported (New Code)
+## Not Ported
 
-- `control/` — All feedback controllers, allocators, force computation
-- `geometry/quaternion.py` — SO(3) and quaternion math
-- `naming.py` — Run labeling (used by UI, minimal porting)
+- `control/` — Feedback controllers
+- `geometry/quaternion.py` — Quaternion math
+- `naming.py` — Run labeling
 - `tests/` — Test suite
 - `notebooks/` — Jupyter experiments
-
----
-
-## Verification
-
-Run the parity check to confirm this code is byte-identical to the original on thousands of test cases:
-
-```bash
-cd /path/to/parent/submission
-python notebooks/nblib/parity_check.py
-```
-
-Expected output: all field kernels and dynamics components pass bit-for-bit comparison.
