@@ -1,7 +1,6 @@
 # The refactored code
 
-This folder contains the ported code from baseline_code.py. No extensions, no feedback control, no SO(3) dynamics. Everything is copied verbatim from the dissertation and verified to match the original.
-
+This folder contains the ported code from baseline_code.py.does not include extensions/ feedback control/ SO(3) dynamics. This is verified againt original
 ## Glossary
 
 **Physics:**
