@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from config import PLOT_2D_PT_DIR
-from geometry.quaternion import quat_to_matrix, quat_normalize
 from geometry.transforms import euler_from_matrix
 from naming import RunTag
 
@@ -66,7 +65,11 @@ def plot_trajectory_so3(sol, tag, save=True, show=True):
     Plot an SO(3) closed-loop result by converting its quaternion
     columns (.y[6:10]) to Euler angles for display and reusing
     plot_trajectory. Display-only; the dynamics keeps the quaternion.
+    Needs geometry/quaternion.py, which isn't in this reduced package, so
+    it is imported here and only fails if this function is called.
     """
+    from geometry.quaternion import quat_to_matrix, quat_normalize
+
     n     = sol.y.shape[1]
     euler = np.zeros((3, n))
     for i in range(n):
